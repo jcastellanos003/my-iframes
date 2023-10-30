@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hubsync Iframes</title>
+    <style>
+      .custom-checkbox {
+        position: relative;
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        border-radius: 2px;
+        margin-right: 8px;
+      }
+
+      .custom-checkbox input[type="checkbox"] {
+        visibility: hidden;
+      }
+
+      .custom-checkbox label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 15px;
+        height: 15px;
+        background-color: black;
+        cursor: pointer;
+        border-radius: 2px;
+      }
+
+      .custom-checkbox label::after {
+        content: "";
+        position: absolute;
+        width: 4px;
+        height: 8px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        top: 2.3px;
+        left: 4.3px;
+        transform: rotate(45deg);
+        display: none;
+      }
+
+      .custom-checkbox input[type="checkbox"]:checked + label::after {
+        display: block;
+      }
+
+      #progressBar {
+        transition: width 0.3s ease;
+      }
+
+      .container {
+        font-family: Arial, sans-serif;
+        padding: 1rem;
+      }
+
+      .due-date {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .total-tasks {
+        font-weight: 500;
+        margin-bottom: 10px;
+        font-size: 12px;
+        color: #666;
+      }
+
+      .progress-bar-container {
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        height: 20px;
+        width: 100%;
+        margin-top: 5px;
+      }
+
+      .progress-bar {
+        background-color: green;
+        border-radius: 5px;
+        height: 20px;
+        width: 83.33%;
+      }
+
+      .task-count {
+        margin-top: 5px;
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .tab:hover {
+        border-bottom: 3px solid #333;
+      }
+
+      .tab.active {
+        border-bottom: 3px solid #333;
+      }
+
+      .task-list {
+        font-size: 14px;
+      }
+
+      .task {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script>
+      function updateProgress() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var checkedCount = 0;
+        checkboxes.forEach(function (checkbox) {
+          if (checkbox.checked) {
+            checkedCount++;
+          }
+        });
+        var totalTasks = checkboxes.length;
+        var newWidth = (checkedCount / totalTasks) * 100;
+        document.getElementById("progressBar").style.width = newWidth + "%";
+        document.querySelector("#taskCount").innerText =
+          checkedCount + "/" + totalTasks;
+      }
+    </script>
+    <div class="container">
+      <p class="due-date">Due today Apr 12, 2023</p>
+
+      <!-- Total Tasks -->
+      <div class="total-tasks">
+        Total tasks
+        <div class="progress-bar-container">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div class="task-count" id="taskCount">5/6</div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">Today</div>
+        <div class="tab">Scheduled</div>
+        <div class="tab">Completed</div>
+      </div>
+
+      <!-- Tasks List -->
+      <div class="task-list">
+        <div class="task">
+          <div class="custom-checkbox">
+            <input
+              type="checkbox"
+              id="check1"
+              onclick="updateProgress()"
+              checked
+            />
+            <label for="check1"></label>
+          </div>
+          Vendor X Onboarding Questionnaire
+        </div>
+
+        <div class="task">
+          <div class="custom-checkbox">
+            <input
+              type="checkbox"
+              id="check2"
+              onclick="updateProgress()"
+              checked
+            />
+            <label for="check2"></label>
+          </div>
+          Vendor X Payment Details
+        </div>
+
+        <div class="task">
+          <div class="custom-checkbox">
+            <input
+              type="checkbox"
+              id="check3"
+              onclick="updateProgress()"
+              checked
+            />
+            <label for="check3"></label>
+          </div>
+          Vendor Y Form W-8IMY
+        </div>
+
+        <div class="task">
+          <div class="custom-checkbox">
+            <input
+              type="checkbox"
+              id="check4"
+              onclick="updateProgress()"
+              checked
+            />
+            <label for="check4"></label>
+          </div>
+          Vendor Y Payment Detail
+        </div>
+
+        <div class="task">
+          <div class="custom-checkbox">
+            <input type="checkbox" id="check5" onclick="updateProgress()" />
+            <label for="check5"></label>
+          </div>
+          Q4 Excise Tax Support
+        </div>
+
+        <div class="task">
+          <div class="custom-checkbox">
+            <input
+              type="checkbox"
+              id="check6"
+              onclick="updateProgress()"
+              checked
+            />
+            <label for="check6"></label>
+          </div>
+          Vendor X Form W-8BEN-E
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
