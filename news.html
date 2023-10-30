@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hubsync News</title>
+    <style>
+      .container {
+        font-family: Arial, sans-serif;
+        padding: 1rem;
+      }
+
+      .update-time {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .card {
+        margin-bottom: 1rem;
+        display: flex;
+        border-radius: 3px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
+      }
+
+      .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-image-container {
+        width: 40%;
+      }
+
+      .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .card-content {
+        display: flex;
+        flex-direction: column;
+        width: 60%;
+        padding: 0.5rem;
+        justify-content: space-between;
+      }
+
+      .card-title {
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .card-date {
+        font-size: 12px;
+        color: #666;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <p class="update-time">
+        Last updated Thursday, April 15 at 09:1001 AM (PT)
+      </p>
+    </div>
+
+    <script>
+      function formatDateForUSUser(isoDateString) {
+        const date = new Date(isoDateString);
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        const formattedDate = date.toLocaleString("en-US", options);
+        return formattedDate;
+      }
+
+      function createCard(data) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.onclick = () => {
+          window.open(
+            `https://www.bakertilly.com/insights/${data._meta.uid}`,
+            "_blank"
+          );
+        };
+
+        const imageContainer = document.createElement("div");
+        imageContainer.className = "card-image-container";
+
+        const image = document.createElement("img");
+        image.className = "card-image";
+        image.src = data.image.thumbnail_x2.url;
+
+        imageContainer.appendChild(image);
+
+        const cardContent = document.createElement("div");
+        cardContent.className = "card-content";
+
+        const cardTitle = document.createElement("div");
+        cardTitle.className = "card-title";
+        cardTitle.textContent = data.title;
+
+        const cardDate = document.createElement("div");
+        cardDate.className = "card-date";
+        cardDate.innerHTML = `Posted <span>${formatDateForUSUser(
+          data.date
+        )}</span>`;
+
+        cardContent.appendChild(cardTitle);
+        cardContent.appendChild(cardDate);
+
+        card.appendChild(imageContainer);
+        card.appendChild(cardContent);
+
+        return card;
+      }
+
+      // Fetch data from the API
+      fetch("https://www.bakertilly.com/api/algolia/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: "sid=3444a992-2424-49c1-b9e3-442c6f6097ca",
+        },
+        body: JSON.stringify([
+          {
+            indexName: "insights-index",
+            params: {
+              query: "",
+              hitsPerPage: 100,
+              maxValuesPerFacet: 1000,
+              page: 0,
+              analytics: false,
+              highlightPreTag: "<ais-highlight-0000000000>",
+              highlightPostTag: "</ais-highlight-0000000000>",
+              facets: ["industries.title", "services.title", "category"],
+              tagFilters: "",
+            },
+          },
+        ]),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const results = data.results[0].hits.slice(0, 10); // Take the first 10 results
+          const container = document.querySelector(".container");
+
+          results.forEach((item) => {
+            const card = createCard(item);
+            container.appendChild(card);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    </script>
+  </body>
+</html>
