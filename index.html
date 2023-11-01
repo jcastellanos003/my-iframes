@@ -117,22 +117,6 @@
   </head>
 
   <body>
-    <script>
-      function updateProgress() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        var checkedCount = 0;
-        checkboxes.forEach(function (checkbox) {
-          if (checkbox.checked) {
-            checkedCount++;
-          }
-        });
-        var totalTasks = checkboxes.length;
-        var newWidth = (checkedCount / totalTasks) * 100;
-        document.getElementById("progressBar").style.width = newWidth + "%";
-        document.querySelector("#taskCount").innerText =
-          checkedCount + "/" + totalTasks;
-      }
-    </script>
     <div class="container">
       <p class="due-date">Due today Apr 12, 2023</p>
 
@@ -147,86 +131,65 @@
 
       <!-- Tabs -->
       <div class="tabs">
-        <div class="tab active">Today</div>
-        <div class="tab">Scheduled</div>
-        <div class="tab">Completed</div>
+        <div class="tab active">Assigned</div>
       </div>
 
       <!-- Tasks List -->
-      <div class="task-list">
-        <div class="task">
-          <div class="custom-checkbox">
-            <input
-              type="checkbox"
-              id="check1"
-              onclick="updateProgress()"
-              checked
-            />
-            <label for="check1"></label>
-          </div>
-          Vendor X Onboarding Questionnaire
-        </div>
-
-        <div class="task">
-          <div class="custom-checkbox">
-            <input
-              type="checkbox"
-              id="check2"
-              onclick="updateProgress()"
-              checked
-            />
-            <label for="check2"></label>
-          </div>
-          Vendor X Payment Details
-        </div>
-
-        <div class="task">
-          <div class="custom-checkbox">
-            <input
-              type="checkbox"
-              id="check3"
-              onclick="updateProgress()"
-              checked
-            />
-            <label for="check3"></label>
-          </div>
-          Vendor Y Form W-8IMY
-        </div>
-
-        <div class="task">
-          <div class="custom-checkbox">
-            <input
-              type="checkbox"
-              id="check4"
-              onclick="updateProgress()"
-              checked
-            />
-            <label for="check4"></label>
-          </div>
-          Vendor Y Payment Detail
-        </div>
-
-        <div class="task">
-          <div class="custom-checkbox">
-            <input type="checkbox" id="check5" onclick="updateProgress()" />
-            <label for="check5"></label>
-          </div>
-          Q4 Excise Tax Support
-        </div>
-
-        <div class="task">
-          <div class="custom-checkbox">
-            <input
-              type="checkbox"
-              id="check6"
-              onclick="updateProgress()"
-              checked
-            />
-            <label for="check6"></label>
-          </div>
-          Vendor X Form W-8BEN-E
-        </div>
+      <div class="task-list" id="taskList">
+        <!-- Tasks will be added here dynamically -->
       </div>
     </div>
+
+    <script>
+      const tasks = [
+        { id: 1, title: "Vendor X Onboarding Questionnaire", completed: true },
+        { id: 2, title: "Vendor X Payment Details", completed: true },
+        { id: 3, title: "Vendor Y Form W-8IMY", completed: true },
+        { id: 4, title: "Vendor Y Payment Detail", completed: true },
+        { id: 5, title: "Q4 Excise Tax Support", completed: false },
+        { id: 6, title: "Vendor X Form W-8BEN-E", completed: true },
+      ];
+
+      function renderTasks() {
+        const taskListElement = document.getElementById("taskList");
+        taskListElement.innerHTML = ""; // Clear existing tasks
+
+        tasks.forEach((task) => {
+          const taskElement = document.createElement("div");
+          taskElement.className = "task";
+
+          taskElement.innerHTML = `
+          <div class="custom-checkbox">
+            <input type="checkbox" id="check${task.id}" ${
+            task.completed ? "checked" : ""
+          } onclick="updateProgress()" />
+            <label for="check${task.id}"></label>
+          </div>
+          ${task.title}
+        `;
+
+          taskListElement.appendChild(taskElement);
+        });
+      }
+
+      function updateProgress() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var checkedCount = 0;
+        checkboxes.forEach(function (checkbox) {
+          if (checkbox.checked) {
+            checkedCount++;
+          }
+        });
+        var totalTasks = checkboxes.length;
+        var newWidth = (checkedCount / totalTasks) * 100;
+        document.getElementById("progressBar").style.width = newWidth + "%";
+        document.querySelector("#taskCount").innerText =
+          checkedCount + "/" + totalTasks;
+      }
+
+      // Initial render of tasks
+      renderTasks();
+      updateProgress();
+    </script>
   </body>
 </html>
